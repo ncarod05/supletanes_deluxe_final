@@ -1,0 +1,15 @@
+# Ignorar carpetas de Spring Boot (Backend)
+/backend/target/
+/backend/*.jar
+/backend/*.war
+
+# Ignorar carpetas de Node (Frontend)
+/frontend/node_modules/
+/frontend/build/
+/frontend/dist/
+/frontend/npm-debug.log
+
+# Ignorar IDE files
+.idea/
+.vscode/
+*.iml
