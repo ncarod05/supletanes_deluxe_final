@@ -42,10 +42,17 @@ public class ProductoServiceImpl implements ProductoService {
 
         // Desnormalización: Incluimos los nombres para el cliente
         if (producto.getMarca() != null) {
+            // Desnormalización: Incluimos el nombre para la tabla
             responseDTO.setMarcaNombre(producto.getMarca().getNombre());
+            // CLAVE: Incluimos el ID para la edición
+            responseDTO.setMarcaId(producto.getMarca().getId());
         }
+
         if (producto.getCategoria() != null) {
+            // Desnormalización: Incluimos el nombre para la tabla
             responseDTO.setCategoriaNombre(producto.getCategoria().getNombre());
+            // CLAVE: Incluimos el ID para la edición
+            responseDTO.setCategoriaId(producto.getCategoria().getId());
         }
 
         return responseDTO;
