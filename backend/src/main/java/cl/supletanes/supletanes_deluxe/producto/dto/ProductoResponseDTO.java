@@ -12,10 +12,17 @@ public class ProductoResponseDTO {
     private Integer stock;
     private Boolean estado;
 
-    // Devolvemos el nombre de la marca y categoría (desnormalizado para el cliente)
+    // Campos de Nombre (Para mostrar en la tabla)
     @Schema(description = "Nombre de la Marca")
     private String marcaNombre; 
     
     @Schema(description = "Nombre de la Categoría")
     private String categoriaNombre;
+
+    // Campos de ID (CLAVE para la edición en el frontend)
+    @Schema(description = "ID de la Marca asociada")
+    private Long marcaId;
+    
+    @Schema(description = "ID de la Categoría asociada")
+    private Long categoriaId;
 }
