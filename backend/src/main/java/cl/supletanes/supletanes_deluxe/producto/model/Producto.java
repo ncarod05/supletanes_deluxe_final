@@ -45,8 +45,8 @@ public class Producto {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "marca_id", nullable = false)
     @Schema(description = "Marca asociada al producto")
-    private Marca marca; 
-    
+    private Marca marca;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "categoria_id", nullable = false)
     @Schema(description = "Categoría asociada al producto")
