@@ -70,7 +70,9 @@ public class CategoriaController {
         @Operation(summary = "Crear una nueva categoria", description = "Agrega una nueva categoria a la base de datos.")
         @ApiResponses(value = {
                         @ApiResponse(responseCode = "201", description = "Categoria creada exitosamente", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CategoriaResponseDTO.class))),
-                        @ApiResponse(responseCode = "400", description = "Solicitud inválida, verificar errores")
+                        @ApiResponse(responseCode = "400", description = "Solicitud inválida, verificar errores"),
+                        @ApiResponse(responseCode = "401", description = "No autenticado. Se requiere token JWT valido.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
+                        @ApiResponse(responseCode = "403", description = "Acceso Denegado. Se requiere rol de Administrador.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class)))
         })
         @PostMapping
         public ResponseEntity<CategoriaResponseDTO> createCategoria(
@@ -83,7 +85,9 @@ public class CategoriaController {
         @ApiResponses(value = {
                         @ApiResponse(responseCode = "200", description = "Categoria actualizada exitosamente", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CategoriaResponseDTO.class))),
                         @ApiResponse(responseCode = "404", description = "Categoria no encontrada", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
-                        @ApiResponse(responseCode = "400", description = "Solicitud inválida")
+                        @ApiResponse(responseCode = "400", description = "Solicitud inválida"),
+                        @ApiResponse(responseCode = "401", description = "No autenticado. Se requiere token JWT valido.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
+                        @ApiResponse(responseCode = "403", description = "Acceso Denegado. Se requiere rol de Administrador.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class)))
         })
         @PutMapping("/{id}")
         public ResponseEntity<CategoriaResponseDTO> updateCategoria(

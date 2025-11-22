@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { authService } from '../services/authService';
 import '../assets/css/Login.css';
 
 const STORAGE_KEYS = ['loggedUser', 'user', 'usuario'];
@@ -27,27 +29,34 @@ const saveTemp = (payload) => {
 };
 
 const Login = ({ setCart }) => {
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    // Prefill email si existe en storage
+    // Prefill username si existe en storage
     try {
-      const keys = STORAGE_KEYS;
-      for (const k of keys) {
-        const raw = localStorage.getItem(k) || sessionStorage.getItem(k);
-        if (!raw) continue;
-        try {
-          const parsed = JSON.parse(raw);
-          if (parsed && parsed.email) {
-            setEmail(parsed.email);
+      const storedUsername = localStorage.getItem('username');
+      if (storedUsername) {
+        setUsername(storedUsername);
+      } else {
+        // Intentar con las claves antiguas
+        const keys = STORAGE_KEYS;
+        for (const k of keys) {
+          const raw = localStorage.getItem(k) || sessionStorage.getItem(k);
+          if (!raw) continue;
+          try {
+            const parsed = JSON.parse(raw);
+            if (parsed && parsed.email) {
+              setUsername(parsed.email);
+              break;
+            }
+          } catch {
+            setUsername(String(raw));
             break;
           }
-        } catch {
-          // raw puede ser un string con el email
-          setEmail(String(raw));
-          break;
         }
       }
     } catch (e) {
@@ -55,39 +64,40 @@ const Login = ({ setCart }) => {
     }
   }, []);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+    setLoading(true);
 
-    const isAdmin = email === 'admin@gmail.com';
-    const payload = {
-      nombre: isAdmin ? 'Administrador' : '',
-      email,
-      telefono: '',
-      direccion: '',
-      rol: isAdmin ? 'admin' : 'usuario'
-    };
-    
-    // Guardar en varias claves para compatibilidad con el resto de la app
-    saveTemp(payload);
+    try {
+      // Llamar al backend para autenticar
+      const response = await authService.login(username, password);
 
-    const productosIniciales = [
-      { nombre: "Prostar Whey Protein 5LB", cantidad: 1, precio: 59990 },
-      { nombre: "Multivitamínico Completo 60 caps", cantidad: 2, precio: 23980 },
-    ];
-    localStorage.setItem("carrito", JSON.stringify(productosIniciales));
-    if (typeof setCart === 'function') setCart(productosIniciales);
+      console.log('Login exitoso:', response);
 
-    // Precargar datos de admin y carrito si no existen
-    if (!localStorage.getItem('adminProductos')) {
-      const productosAdminIniciales = [
-        { id: 1, nombre: 'Proteína Whey', precio: 19990, descripcion: 'Proteína de suero', categoria: 'Proteína', stock: 36 },
-        { id: 2, nombre: 'Creatina Monohidratada', precio: 14990, descripcion: 'Creatina para fuerza', categoria: 'Creatina', stock: 67 }
-      ];
-      localStorage.setItem('adminProductos', JSON.stringify(productosAdminIniciales));
+      // Crear payload compatible con el sistema anterior
+      const payload = {
+        nombre: response.username === 'admin' ? 'Administrador' : response.username,
+        email: `${response.username}@suplementos.com`, // Email ficticio para compatibilidad
+        telefono: '',
+        direccion: '',
+        rol: response.role === 'ADMIN' ? 'admin' : 'usuario',
+        username: response.username,
+        role: response.role
+      };
+
+      // Guardar en las claves antiguas para compatibilidad
+      saveTemp(payload);
+      
+      // Redirigir a inicio
+      navigate('/');
+      
+    } catch (error) {
+      console.error('Error en login:', error);
+      setError('Usuario o contraseña incorrectos');
+    } finally {
+      setLoading(false);
     }
-
-    window.location.href = '/';
   };
 
   return (
@@ -98,11 +108,12 @@ const Login = ({ setCart }) => {
             <h2>Iniciar Sesión</h2>
             {error && <div className="login-error">{error}</div>}
             <input
-              type="email"
-              placeholder="Correo electrónico"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              type="text"
+              placeholder="Usuario"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
               required
+              disabled={loading}
             />
             <input
               type="password"
@@ -110,9 +121,14 @@ const Login = ({ setCart }) => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
+              disabled={loading}
             />
-            <div className="form-text text-center mb-2">¿No tienes una cuenta? <a href="/nuevousuario" className="link-primary">Crear cuenta</a></div>
-            <button type="submit">Entrar</button>
+            <div className="form-text text-center mb-2">
+              ¿No tienes una cuenta? <a href="/nuevousuario" className="link-primary">Crear cuenta</a>
+            </div>
+            <button type="submit" disabled={loading}>
+              {loading ? 'Iniciando sesión...' : 'Entrar'}
+            </button>
           </form>
         </div>
       </div>

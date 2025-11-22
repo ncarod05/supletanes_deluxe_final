@@ -70,7 +70,9 @@ public class MarcaController {
         @Operation(summary = "Crear una nueva marca", description = "Agrega una nueva marca a la base de datos.")
         @ApiResponses(value = {
                         @ApiResponse(responseCode = "201", description = "Marca creada exitosamente", content = @Content(mediaType = "application/json", schema = @Schema(implementation = MarcaResponseDTO.class))),
-                        @ApiResponse(responseCode = "400", description = "Solicitud inválida, verificar errores")
+                        @ApiResponse(responseCode = "400", description = "Solicitud inválida, verificar errores"),
+                        @ApiResponse(responseCode = "401", description = "No autenticado. Se requiere token JWT valido.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
+                        @ApiResponse(responseCode = "403", description = "Acceso Denegado. Se requiere rol de Administrador.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class)))
         })
         @PostMapping
         public ResponseEntity<MarcaResponseDTO> createMarca(
@@ -83,7 +85,9 @@ public class MarcaController {
         @ApiResponses(value = {
                         @ApiResponse(responseCode = "200", description = "Marca actualizada exitosamente", content = @Content(mediaType = "application/json", schema = @Schema(implementation = MarcaResponseDTO.class))),
                         @ApiResponse(responseCode = "404", description = "Marca no encontrada", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
-                        @ApiResponse(responseCode = "400", description = "Solicitud inválida")
+                        @ApiResponse(responseCode = "400", description = "Solicitud inválida"),
+                        @ApiResponse(responseCode = "401", description = "No autenticado. Se requiere token JWT valido.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
+                        @ApiResponse(responseCode = "403", description = "Acceso Denegado. Se requiere rol de Administrador.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class)))
         })
         @PutMapping("/{id}")
         public ResponseEntity<MarcaResponseDTO> updateMarca(

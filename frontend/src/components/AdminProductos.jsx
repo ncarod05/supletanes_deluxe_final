@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Table, Button, Modal, Form } from 'react-bootstrap';
-import axios from 'axios';
+import api from '../services/api'; // Importar el servicio con interceptor JWT
 
-const API_BASE_URL = 'http://localhost:8080';
-const API_PRODUCTOS = `${API_BASE_URL}/api/productos`; // Endpoint base (para POST, PUT, DELETE)
-const API_PRODUCTOS_ACTIVOS = `${API_PRODUCTOS}/activos`; // Endpoint para GET
-const API_CATEGORIAS = `${API_BASE_URL}/api/categorias`;
-const API_MARCAS = `${API_BASE_URL}/api/marcas`;
+const API_PRODUCTOS = '/productos';
+const API_PRODUCTOS_ACTIVOS = `${API_PRODUCTOS}/activos`;
+const API_CATEGORIAS = '/categorias';
+const API_MARCAS = '/marcas';
 
 function AdminProductos() {
   const [productos, setProductos] = useState([]); // Inicia vacío, ya no usa localStorage
@@ -20,7 +19,7 @@ function AdminProductos() {
   // Función para cargar categorías
   const cargarCategorias = async () => {
     try {
-      const response = await axios.get(API_CATEGORIAS);
+      const response = await api.get(API_CATEGORIAS);
       setCategorias(response.data);
     } catch (error) {
       console.error('Error al cargar categorías:', error);
@@ -30,7 +29,7 @@ function AdminProductos() {
   // Función para cargar marcas
   const cargarMarcas = async () => {
     try {
-      const response = await axios.get(API_MARCAS);
+      const response = await api.get(API_MARCAS);
       setMarcas(response.data);
     } catch (error) {
       console.error('Error al cargar marcas:', error);
@@ -41,14 +40,14 @@ function AdminProductos() {
   const cargarProductos = async () => {
     try {
       setLoading(true); // Inicia la carga
-      const response = await axios.get(API_PRODUCTOS_ACTIVOS);
+      const response = await api.get(API_PRODUCTOS_ACTIVOS);
       setProductos(response.data);
       setError(null);
     } catch (err) {
       console.error("Error al cargar productos:", err);
       setError("Fallo al conectar con el servidor. ¿El backend está corriendo?");
     } finally {
-      setLoading(false); // Finaliza la carga
+      setLoading(false);  // Finaliza la carga
     }
   };
 
@@ -97,7 +96,13 @@ function AdminProductos() {
 
   const cerrarModal = () => {
     setShowModal(false);
-    setNuevoProducto({ nombre: '', precio: '' });
+    setNuevoProducto({ 
+      nombre: '', 
+      precio: '', 
+      categoriaId: '',
+      marcaId: '',
+      stock: ''
+    });
     setProductoEditando(null);
   };
 
@@ -105,7 +110,7 @@ function AdminProductos() {
     const { name, value } = e.target;
     setNuevoProducto(prev => ({
       ...prev,
-      [name]: value // Esto actualiza la propiedad 'marca' o 'categoria' según el 'name'
+      [name]: value // Esto actualiza la propiedad marca o categoria según el name
     }));
   };
 
@@ -138,17 +143,22 @@ function AdminProductos() {
           alert('Error: No se encontró el ID para editar.');
           return;
         }
-        await axios.put(`${API_PRODUCTOS}/${productoEditando.id}`, productoRequest);
+        await api.put(`${API_PRODUCTOS}/${productoEditando.id}`, productoRequest);
       } else {
         // Petición POST para CREAR
-        await axios.post(API_PRODUCTOS, productoRequest);
+        await api.post(API_PRODUCTOS, productoRequest);
       }
 
       cargarProductos();
       cerrarModal();
 
     } catch (err) {
-      alert('Error al guardar el producto. Revisa la consola para detalles.');
+      // El interceptor ya maneja el error 401, aquí se manejan otros errores
+      if (err.response?.status === 403) {
+        alert('No tienes permisos para realizar esta acción. Debes ser administrador.');
+      } else {
+        alert('Error al guardar el producto. Revisa la consola para detalles.');
+      }
       console.error("Error al guardar:", err.response ? err.response.data : err);
     }
   };
@@ -157,11 +167,15 @@ function AdminProductos() {
     if (!window.confirm('¿Estás seguro de que quieres eliminar este producto?')) return;
 
     try {
-      await axios.delete(`${API_PRODUCTOS}/${id}`);
+      await api.delete(`${API_PRODUCTOS}/${id}`);
       cargarProductos();
 
     } catch (err) {
-      alert('Error al eliminar el producto. Revisa la consola para detalles.');
+      if (err.response?.status === 403) {
+        alert('No tienes permisos para eliminar productos. Debes ser administrador.');
+      } else {
+        alert('Error al eliminar el producto. Revisa la consola para detalles.');
+      }
       console.error("Error al eliminar:", err.response ? err.response.data : err);
     }
   };
@@ -171,14 +185,12 @@ function AdminProductos() {
       <Container className="mt-5">
         <h2 className="mb-3">Gestión de Productos</h2>
 
-        {/*Muestra el estado de carga*/}
         {loading && (
           <div className="text-center my-4">
             <p className="text-info">Cargando productos activos...</p>
           </div>
         )}
 
-        {/*Muestra el estado de error*/}
         {error && (
           <div className="alert alert-danger" role="alert">
             <p>¡Error de Conexión!</p>
@@ -186,7 +198,6 @@ function AdminProductos() {
           </div>
         )}
 
-        {/*Muestra el contenido solo si no está cargando y no hay error*/}
         {!loading && !error && (
           <>
             <Button variant="success" className="mb-3" onClick={() => abrirModal()}>
@@ -242,8 +253,8 @@ function AdminProductos() {
             <Form.Group className="mb-3">
               <Form.Label>Marca</Form.Label>
               <Form.Select
-                name="marcaId" // el nombre que spring espera
-                value={nuevoProducto.marcaId} // usar la propiedad de ID en el estado
+                name="marcaId"
+                value={nuevoProducto.marcaId}
                 onChange={handleChange}
               >
                 <option value="">Selecciona Marca</option>

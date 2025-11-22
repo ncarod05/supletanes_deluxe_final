@@ -18,7 +18,7 @@ public class SwaggerConfig {
         
         return new OpenAPI()
                 .info(new Info()
-                        .title("Suplementos Deluxe API")
+                        .title("Supletanes Deluxe API")
                         .version("1.0")
                         .description("API REST para gestión de suplementos deportivos"))
                 .addSecurityItem(new SecurityRequirement()
