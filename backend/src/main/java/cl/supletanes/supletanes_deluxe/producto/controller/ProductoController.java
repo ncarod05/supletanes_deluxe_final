@@ -71,7 +71,9 @@ public class ProductoController {
         @Operation(summary = "Crear un nuevo producto", description = "Agrega un nuevo producto a la base de datos.")
         @ApiResponses(value = {
                         @ApiResponse(responseCode = "201", description = "Producto creado exitosamente", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Producto.class))),
-                        @ApiResponse(responseCode = "400", description = "Datos inválidos", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class)))
+                        @ApiResponse(responseCode = "400", description = "Datos inválidos", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
+                        @ApiResponse(responseCode = "401", description = "No autenticado. Se requiere token JWT valido.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
+                        @ApiResponse(responseCode = "403", description = "Acceso Denegado. Se requiere rol de Administrador.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class)))
         })
         @PostMapping
         public ResponseEntity<ProductoResponseDTO> createProducto(
@@ -85,7 +87,9 @@ public class ProductoController {
         @ApiResponses(value = {
                         @ApiResponse(responseCode = "200", description = "Producto actualizado exitosamente", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Producto.class))),
                         @ApiResponse(responseCode = "404", description = "Producto no encontrado"),
-                        @ApiResponse(responseCode = "400", description = "Solicitud inválida")
+                        @ApiResponse(responseCode = "400", description = "Solicitud inválida"),
+                        @ApiResponse(responseCode = "401", description = "No autenticado. Se requiere token JWT valido.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
+                        @ApiResponse(responseCode = "403", description = "Acceso Denegado. Se requiere rol de Administrador.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class)))
         })
         @PutMapping("/{id}")
         public ResponseEntity<ProductoResponseDTO> updateProducto(
