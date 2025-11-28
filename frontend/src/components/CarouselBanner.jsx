@@ -1,35 +1,65 @@
-import React from 'react';
+// CarouselBanner.jsx
+import React, { useState, useEffect, useRef } from 'react';
+import SlideContent from './SlideContent';
+// Asegúrate de que jQuery y Bootstrap JS están cargados globalmente si usas eventos
+
+// ... (Definiciones de captionVariants y SlideContent) ...
 
 function CarouselBanner() {
+  // 1. Estado para rastrear qué slide está activo (0, 1, 2...)
+  const [activeIndex, setActiveIndex] = useState(0);
+  const carouselRef = useRef(null); // Referencia al elemento del carrusel
+
+  useEffect(() => {
+    const carouselEl = carouselRef.current;
+
+    if (!carouselEl) return;
+
+    // Función para obtener el índice del slide activo
+    const handleSlid = () => {
+      // En un entorno de Bootstrap, el slide activo tiene la clase 'active'
+      const activeItem = carouselEl.querySelector('.carousel-item.active');
+      const items = Array.from(carouselEl.querySelectorAll('.carousel-item'));
+      const newIndex = items.indexOf(activeItem);
+
+      // Actualiza el estado de React con el nuevo índice
+      setActiveIndex(newIndex);
+    };
+
+    // 2. Escuchar el evento 'slid.bs.carousel' de Bootstrap
+    // Este evento se dispara DESPUÉS de que la transición del slide ha terminado.
+    carouselEl.addEventListener('slid.bs.carousel', handleSlid);
+
+    // Limpieza del listener
+    return () => {
+      carouselEl.removeEventListener('slid.bs.carousel', handleSlid);
+    };
+  }, []);
+
+  // Array de datos del carrusel para mapear
+  const slides = [
+    { title: "¡Bienvenido a Supletanes Deluxe!", text: "Encuentra los mejores suplementos al mejor precio.", imgSrc: "/assets/img/suplementos-deportivos.webp", alt: "Promo 1" },
+    { title: "🔥 Ofertas exclusivas 🔥", text: "Aprovecha descuentos especiales por tiempo limitado.", imgSrc: "/assets/img/Nutricion-deportiva.jpg", alt: "Promo 2" },
+    { title: "Envíos a todo Chile", text: "Rápido, seguro y con garantía de calidad.", imgSrc: "/assets/img/suplementos_deportivos_1_9f22bd9520.png", alt: "Promo 3" },
+  ];
+
   return (
-    <div id="carouselBanner" className="carousel slide carousel-banner" data-bs-ride="carousel">
+    // 3. Agregar la referencia al div principal del carrusel
+    <div id="carouselBanner" className="carousel slide carousel-banner" data-bs-ride="carousel" ref={carouselRef}>
       <div className="carousel-inner">
-        {/* Imagen 1 */}
-        <div className="carousel-item active">
-          <img src="/assets/img/suplementos-deportivos.webp" className="d-block w-100" alt="Promo 1" />
-          <div className="carousel-caption d-none d-md-block">
-            <h5>¡Bienvenido a Supletanes Deluxe!</h5>
-            <p>Encuentra los mejores suplementos al mejor precio.</p>
-          </div>
-        </div>
 
-        {/* Imagen 2 */}
-        <div className="carousel-item">
-          <img src="/assets/img/Nutricion-deportiva.jpg" className="d-block w-100" alt="Promo 2" />
-          <div className="carousel-caption d-none d-md-block">
-            <h5>🔥 Ofertas exclusivas 🔥</h5>
-            <p>Aprovecha descuentos especiales por tiempo limitado.</p>
-          </div>
-        </div>
+        {slides.map((slide, index) => (
+          <div key={index} className={`carousel-item ${index === 0 ? 'active' : ''}`}>
+            <img src={slide.imgSrc} className="d-block w-100" alt={slide.alt} />
 
-        {/* Imagen 3 */}
-        <div className="carousel-item">
-          <img src="/assets/img/suplementos_deportivos_1_9f22bd9520.png" className="d-block w-100" alt="Promo 3" />
-          <div className="carousel-caption d-none d-md-block">
-            <h5>Envíos a todo Chile</h5>
-            <p>Rápido, seguro y con garantía de calidad.</p>
+            {/* 4. Pasar el estado 'isActive' al componente de contenido */}
+            <SlideContent
+              title={slide.title}
+              text={slide.text}
+              isActive={index === activeIndex}
+            />
           </div>
-        </div>
+        ))}
       </div>
 
       {/* Botones anterior / siguiente */}
