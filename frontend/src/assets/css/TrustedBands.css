@@ -1,0 +1,73 @@
+.logos-track-wrapper {
+    /* Oculta cualquier contenido que se salga de este div */
+    overflow: hidden;
+    /* Asegura que no se muestre la barra de desplazamiento horizontal */
+    white-space: nowrap;
+}
+
+.logos-track {
+    /* El ancho será calculado en el JS, pero por ahora solo es un contenedor */
+    display: flex;
+    width: auto;
+}
+
+.logo-item {
+    /* Importante: Define el ancho fijo de cada logo/columna */
+    flex-shrink: 0;
+    width: 250px;
+    /* Ejemplo de ancho fijo para que se salgan del wrapper */
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.logo-item img {
+    max-width: 100%;
+    height: auto;
+    opacity: 0.7;
+}
+
+/* Contenedor padre de las máscaras y el track */
+.fade-mask-container {
+    /* Necesario para que las máscaras se posicionen de forma absoluta respecto al contenedor */
+    position: relative;
+}
+
+/* Estilos comunes para ambas máscaras */
+.fade-mask {
+    /* Posicionar encima del track */
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    /* El z-index debe ser mayor que el de los logos para que se vean encima */
+    z-index: 10;
+    width: 150px;
+    /* Ancho del área de desvanecimiento */
+    pointer-events: none;
+    /* Permite hacer clic o interactuar con los logos debajo */
+}
+
+/* Máscara del borde izquierdo (de transparente a sólido) */
+.fade-mask.left {
+    left: 0;
+    background: linear-gradient(to right,
+            /* El color de fondo de la sección, en este caso bg-light */
+            rgba(248, 249, 250, 1) 0%,
+            /* Inicia sólido */
+            rgba(248, 249, 250, 0) 100%
+            /* Termina transparente */
+        );
+}
+
+/* Máscara del borde derecho (de sólido a transparente) */
+.fade-mask.right {
+    right: 0;
+    background: linear-gradient(to left,
+            /* El color de fondo de la sección */
+            rgba(248, 249, 250, 1) 0%,
+            /* Inicia sólido */
+            rgba(248, 249, 250, 0) 100%
+            /* Termina transparente */
+        );
+}

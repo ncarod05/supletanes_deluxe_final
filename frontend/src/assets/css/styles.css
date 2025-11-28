@@ -243,20 +243,20 @@ h3 {
   width: 100%;
   margin: auto;
   text-align: center;
-  background: rgba(0, 0, 0, 0.6);
+  background: rgba(0, 0, 0, 0.8);
 }
 
 .carousel-banner .carousel-caption h5 {
   font-family: 'Bebas Neue', cursive;
   font-size: 70px;
   color: #FFD166;
-  text-shadow: 2px 2px 6px #000;
+  text-shadow: 1px 1px 40px #d1b3089a;
 }
 
 .carousel-banner .carousel-caption p {
   font-size: 22px;
   color: #fff;
-  text-shadow: 1px 1px 4px #000;
+  text-shadow: 1px 1px 4px #ffffff83;
 }
 
 /* Carrusel en Quienes Somos */
