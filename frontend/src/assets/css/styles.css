@@ -47,7 +47,8 @@ h3 {
   background-color: #D62828;
   color: #FFFFFF;
   border: none;
-  padding: 0.375rem 0.75rem; /* igual que Bootstrap */
+  padding: 0.375rem 0.75rem;
+  /* igual que Bootstrap */
   font-size: 1rem;
   line-height: 1.5;
   border-radius: 0.375rem;
@@ -116,7 +117,8 @@ h3 {
 }
 
 .product-card .button {
-  margin-top: auto; /* fuerza el botón al final */
+  margin-top: auto;
+  /* fuerza el botón al final */
 }
 
 .card-link {
@@ -231,8 +233,10 @@ h3 {
 
 /*Carrusel banner del Index */
 .carousel-banner .carousel-item img {
-  max-height: 500px; /* controla la altura */
-  object-fit: cover; /* ajusta la imagen sin deformarla */
+  max-height: 500px;
+  /* controla la altura */
+  object-fit: cover;
+  /* ajusta la imagen sin deformarla */
 }
 
 .carousel-banner .carousel-caption {
@@ -395,7 +399,9 @@ body {
 }
 
 .admin-info {
-  align-content: center;
+  display: flex;
+  align-items: center;
+  gap: 3rem;
 }
 
 .reseña-titulo {
