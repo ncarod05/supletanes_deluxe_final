@@ -7,16 +7,16 @@ function AdminDashboard() {
       <main className="mt-5">
         <Container>
           <h2 className="mb-2 text-center">Panel de Administrador</h2>
-          <Row className="justify-content-center">
-              <Col md={3} className='d-flex'>
-                <i class="bi bi-person-vcard" style={{ fontSize: '18rem', color: '#264653' }}></i>
-              </Col>
+          <section className="admin-info">
+              <div>
+                <i class="bi bi-person-vcard logo-admin" style={{ fontSize: '18rem', color: '#264653' }}></i>
+              </div>
 
-              <Col className="admin-info">
+              <div>
                 <h3>Nombre: Juan Pérez Ramirez</h3>
                 <h3>Rut: XX.XXX.XXX-X</h3>
-              </Col>
-          </Row>
+              </div>
+          </section>
 
           <Row className="justify-content-center">
             {/* Gestión de Productos */}
