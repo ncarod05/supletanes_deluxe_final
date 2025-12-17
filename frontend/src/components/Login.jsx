@@ -78,7 +78,7 @@ const Login = ({ setCart }) => {
       // Crear payload compatible con el sistema anterior
       const payload = {
         nombre: response.username === 'admin' ? 'Administrador' : response.username,
-        email: `${response.username}@suplementos.com`, // Email ficticio para compatibilidad
+        email: response.email,
         telefono: '',
         direccion: '',
         rol: response.role === 'ADMIN' ? 'admin' : 'usuario',

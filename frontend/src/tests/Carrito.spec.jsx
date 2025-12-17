@@ -44,7 +44,7 @@ describe('Carrito', () => {
         spyOn(window, 'alert');
         const comprarBtn = screen.getByText('Realizar Compra');
         fireEvent.click(comprarBtn);
-        expect(window.alert).toHaveBeenCalledWith('Compra realizada con éxito 🎉');
+        expect(window.alert).toHaveBeenCalledWith('Compra realizada con éxito');
         expect(setCart).toHaveBeenCalledWith([]);
     });
 

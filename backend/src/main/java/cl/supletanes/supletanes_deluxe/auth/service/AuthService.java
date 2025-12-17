@@ -52,6 +52,8 @@ public class AuthService {
                 .token(token)
                 .username(usuario.getUsername())
                 .role(usuario.getRole().name())
+                .email(usuario.getEmail())
+                .nombre(usuario.getNombre())
                 .message("Usuario registrado exitosamente")
                 .build();
     }
@@ -73,6 +75,8 @@ public class AuthService {
                 .token(token)
                 .username(usuario.getUsername())
                 .role(usuario.getRole().name())
+                .email(usuario.getEmail())
+                .nombre(usuario.getNombre())
                 .message("Login exitoso")
                 .build();
     }

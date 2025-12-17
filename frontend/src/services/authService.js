@@ -1,6 +1,36 @@
 const API_URL = 'http://localhost:8080/api/auth';
 
 export const authService = {
+    register: async (userData) => {
+        try {
+            const response = await fetch(`${API_URL}/register`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(userData)
+            });
+
+            if (!response.ok) {
+                throw new Error('Registro fallido');
+            }
+
+            const data = await response.json();
+
+            // guardar token
+            if (data.token) {
+                localStorage.setItem('token', data.token);
+                localStorage.setItem('username', data.username);
+                localStorage.setItem('role', data.role);
+            }
+
+            return data;
+        } catch (error) {
+            console.error('Error en registro:', error);
+            throw error;
+        }
+    },
+
     login: async (username, password) => {
         try {
             const response = await fetch(`${API_URL}/login`, {

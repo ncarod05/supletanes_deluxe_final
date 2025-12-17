@@ -55,7 +55,7 @@ describe('ProductoIndividual', () => {
     const boton = screen.getByRole('button', { name: /agregar al carrito/i });
     fireEvent.click(boton);
 
-    expect(window.alert).toHaveBeenCalledWith('Producto agregado al carrito 🛒');
+    expect(window.alert).toHaveBeenCalledWith('Producto agregado al carrito');
   });
 
   it('permite cambiar la cantidad desde el input', () => {
